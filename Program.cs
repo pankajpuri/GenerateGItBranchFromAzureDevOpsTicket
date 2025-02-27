@@ -8,6 +8,8 @@ namespace GenerateGItBranchFromAzureDevOpsTicket
     {
         static void Main(string[] args)
         {
+            int counter = 0;
+            int limit = 2;
             while (true)
             {
                 Console.WriteLine("Enter the ticket number.");
@@ -20,8 +22,24 @@ namespace GenerateGItBranchFromAzureDevOpsTicket
 
                 PrintDash(ticketLength);
 
-                GenrateGitBranch(ticket, ticketLength);
+               string getTicket = GenrateGitBranch(ticket);
+               PrintTicket(getTicket, ticketLength);
+                counter++;
+                if(counter == limit)
+                {
+                    Console.Clear();
+                    PrintTicket(getTicket, ticketLength);
+                    counter = 0;
+                }
             }
+        }
+
+        private static void PrintTicket(string ticket, int ticketLength)
+        {
+            Console.WriteLine(ticket);
+            PrintDash(ticketLength);
+            ClipboardService.SetText(ticket);
+            Console.WriteLine();
         }
 
         private static void PrintDash(int lengthOfTicket)
@@ -33,7 +51,7 @@ namespace GenerateGItBranchFromAzureDevOpsTicket
             Console.WriteLine("");
         }
 
-        private static void GenrateGitBranch(string? ticket, int ticketLength)
+        private static string GenrateGitBranch(string? ticket)
         {
             if (ticket != null)
             {
@@ -52,15 +70,9 @@ namespace GenerateGItBranchFromAzureDevOpsTicket
                 ticket = ticket.Replace(' ', '-');
 
             }
-            else
-            {
-                return;
-            }
-            var printTicket = "git checkout -b \"" + ticket + "\"";
-            Console.WriteLine(printTicket);
-            PrintDash(ticketLength);
-            ClipboardService.SetText(printTicket);
-            Console.WriteLine();
+           
+            return "git checkout -b \"" + ticket + "\"";
+            
         }
     }
 }
